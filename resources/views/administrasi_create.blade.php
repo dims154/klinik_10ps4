@@ -19,14 +19,14 @@
                             <span class="text-denger">{{ $errors->first('tanggal') }}</span>
                         </div>
                         <div class="form-group">
-                            <label for="pasien_id">Pasien</label>
-                            <select class="form-control" name="pasien_id" id="pasien_id">
-                                <option value="">-pilih pasien-</option>
-                                @foreach ($list_pasien as $id=>$a)
+                            <label for="pasiens_id">pasiens</label>
+                            <select class="form-control" name="pasien_id" id="pasiens_id">
+                                <option value="">-pilih pasiens-</option>
+                                @foreach ($list_pasiens as $id=>$a)
                                     <option value="{{ $id }}">{{ $a }}</option>
                                 @endforeach
                             </select>
-                            <span class="text-denger">{{ $errors->first('pasien_id') }}</span>
+                            <span class="text-denger">{{ $errors->first('pasiens_id') }}</span>
                         </div>
                         <div class="form-group">
                             <label for="dokter_id">Dokter</label>

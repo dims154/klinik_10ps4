@@ -2,27 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Dokter;
+use App\Models\Pasiens;
+use App\Models\Administrasi;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        $totalDokter = Dokter::count();
+        $totalPasien = Pasiens::count();
+        $totalTransaksi = Administrasi::count();
+        $totalPendapatan = Administrasi::sum('biaya');
+
+        $pendapatanBulanan = Administrasi::selectRaw('MONTH(tanggal) as bulan, SUM(biaya) as total')
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+
+        $statusPasien = Pasiens::selectRaw('jenis_kelamin, COUNT(*) as jumlah')
+            ->groupBy('jenis_kelamin')
+            ->get();
+
+        $transaksiTerbaru = Administrasi::with(['pasien', 'dokter'])
+            ->latest('tanggal')
+            ->take(5)
+            ->get();
+
+        return view('home', compact(
+            'totalDokter',
+            'totalPasien',
+            'totalTransaksi',
+            'totalPendapatan',
+            'pendapatanBulanan',
+            'statusPasien',
+            'transaksiTerbaru'
+        ));
     }
 }

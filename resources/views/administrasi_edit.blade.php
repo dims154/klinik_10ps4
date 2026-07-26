@@ -27,11 +27,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label>Pasien</label>
+                            <label>pasiens</label>
 
                             <select name="pasien_id" class="form-control">
 
-                                @foreach($list_pasien as $id => $nama)
+                                @foreach($list_pasiens as $id => $nama)
 
                                     <option value="{{ $id }}"
                                         @selected($administrasi->pasien_id == $id)>

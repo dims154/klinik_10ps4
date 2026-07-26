@@ -4,113 +4,233 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Sistem Informasi Klinik') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
-    <!-- Scripts -->
+    <!-- Bootstrap -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-                        @auth
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Data Klinik
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ url('dokter') }}">Data Dokter</a>
-                                <a class="dropdown-item" href="{{ url('dokter/create') }}">Tambah Dokter</a>
-                                <hr class="dropdown-divider">
-                                <a class="dropdown-item" href="{{ url('pasien') }}">Data Pasien</a>
-                                <a class="dropdown-item" href="{{ url('pasien/create') }}">Tambah Pasien</a>
-                            </div>
-                        </li>
+<div id="app">
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Data Transaksi
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Tampil Data</a>
-                                <a class="dropdown-item" href="#">Tambah Data</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Laporan
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Laporan Pasien</a>
-                                <a class="dropdown-item" href="{{ url('dokter/laporan/cetak') }}">Laporan Dokter</a>
-                                <a class="dropdown-item" href="#">Laporan Transaksi</a>
-                            </div>
-                        </li>
-                        
-                            
-                        @endauth
-                    </ul>   
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
+            <a class="navbar-brand fw-bold" href="{{ route('home') }}">
+                Sistem Informasi Klinik
+            </a>
 
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                {{-- MENU KIRI --}}
+                <ul class="navbar-nav me-auto">
+
+                    @auth
+
+                    {{-- DATA KLINIK --}}
+                    <li class="nav-item dropdown">
+
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           data-bs-toggle="dropdown">
+
+                            Data Klinik
+
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('dokter.index') }}">
+                                    Data Dokter
                                 </a>
+                            </li>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('dokter.create') }}">
+                                    Tambah Dokter
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('pasiens.index') }}">
+                                    Data pasiens
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('pasiens.create') }}">
+                                    Tambah pasiens
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('administrasi.index') }}">
+                                    Data Administrasi
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('administrasi.create') }}">
+                                    Tambah Administrasi
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                    {{-- LAPORAN --}}
+                    <li class="nav-item dropdown">
+
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           data-bs-toggle="dropdown">
+
+                            Laporan
+
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('dokter.laporan') }}">
+                                    Laporan Dokter
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('pasiens.laporan') }}">
+                                    Laporan pasiens
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="{{ route('administrasi.laporan') }}">
+                                    Laporan Administrasi
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                    @endauth
+
+                </ul>
+
+                {{-- MENU KANAN --}}
+                <ul class="navbar-nav ms-auto">
+
+                    @guest
+
+                        @if (Route::has('login'))
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{{ route('login') }}">
+                                    Login
+                                </a>
+                            </li>
+                        @endif
+
+                        @if (Route::has('register'))
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{{ route('register') }}">
+                                    Register
+                                </a>
+                            </li>
+                        @endif
+
+                    @else
+
+                        <li class="nav-item dropdown">
+
+                            <a id="navbarDropdown"
+                               class="nav-link dropdown-toggle"
+                               href="#"
+                               role="button"
+                               data-bs-toggle="dropdown">
+
+                                {{ Auth::user()->name }}
+
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                       document.getElementById('logout-form').submit();">
+
+                                        Logout
+
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                                </li>
 
-        <main class="py-4">
-          
+                            </ul>
+
+                            <form id="logout-form"
+                                  action="{{ route('logout') }}"
+                                  method="POST"
+                                  class="d-none">
+
+                                @csrf
+
+                            </form>
+
+                        </li>
+
+                    @endguest
+
+                </ul>
+
+            </div>
+
+        </div>
+    </nav>
+
+    <main class="py-4">
+
+        <div class="container">
+
             @yield('content')
-        </main>
-    </div>
+
+        </div>
+
+    </main>
+
+</div>
+
 </body>
 </html>

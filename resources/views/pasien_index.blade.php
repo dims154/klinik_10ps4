@@ -1,71 +1,118 @@
 @extends('layouts.sbadmin2')
 
 @section('isinya')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">
 
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Pasien</span>
-                    <a href="{{ url('pasien/create') }}" class="btn btn-primary btn-sm">
-                        + Tambah Pasien
-                    </a>
-                </div>
+<div class="container-fluid">
 
-                <div class="card-body">
+    <div class="card shadow">
 
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Kode Pasien</th>
-                                <th>Nama Pasien</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Status</th>
-                                <th>Alamat</th>
-                                <th width="170">Aksi</th>
-                            </tr>
-                        </thead>
+        <div class="card-header d-flex justify-content-between">
 
-                        <tbody>
-                            @foreach ($pasien as $a)
-                            <tr>
-                                <td>{{ $a->id }}</td>
-                                <td>{{ $a->kode_pasien }}</td>
-                                <td>{{ $a->nama_pasien }}</td>
-                                <td>{{ $a->jenis_kelamin }}</td>
-                                <td>{{ $a->status }}</td>
-                                <td>{{ $a->alamat }}</td>
-                                <td>
-                                    <a href="{{ url('pasien/'.$a->id.'/edit') }}"
-                                        class="btn btn-warning btn-sm">
-                                        Edit
-                                    </a>
+            <h4>Data Pasien</h4>
 
-                                    <form action="{{ url('pasien/'.$a->id) }}"
-                                        method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Apakah data akan dihapus?')">
+            <a href="{{ route('pasien.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tambah Pasien
+            </a>
 
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button class="btn btn-danger btn-sm">
-                                            Hapus
-                                        </button>
-
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-
-                    </table>
-
-                </div>
-            </div>
         </div>
+
+        <div class="card-body">
+
+            @if(session('pesan'))
+                <div class="alert alert-success">
+                    {{ session('pesan') }}
+                </div>
+            @endif
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="thead-light">
+
+                        <tr>
+                            <th>No</th>
+                            <th>Kode Pasien</th>
+                            <th>Nama Pasien</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Status</th>
+                            <th>Alamat</th>
+                            <th width="170">Aksi</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($pasiens as $pasien)
+
+                        <tr>
+
+                            <td>{{ $loop->iteration }}</td>
+
+                            <td>{{ $pasien->kode_pasien }}</td>
+
+                            <td>{{ $pasien->nama_pasien }}</td>
+
+                            <td>{{ $pasien->jenis_kelamin }}</td>
+
+                            <td>{{ $pasien->status }}</td>
+
+                            <td>{{ $pasien->alamat }}</td>
+
+                            <td>
+
+                                <a href="{{ route('pasien.edit',$pasien->id) }}"
+                                   class="btn btn-warning btn-sm">
+                                    Edit
+                                </a>
+
+                                <form action="{{ route('pasien.destroy',$pasien->id) }}"
+                                      method="POST"
+                                      class="d-inline">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Hapus data?')">
+
+                                        Hapus
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        @empty
+
+                        <tr>
+
+                            <td colspan="7" class="text-center">
+
+                                Data belum ada.
+
+                            </td>
+
+                        </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {{ $pasiens->links() }}
+
+        </div>
+
     </div>
+
 </div>
+
 @endsection

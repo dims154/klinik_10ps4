@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dokter;
+use App\Models\Administrasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DokterController extends Controller
 {
@@ -21,11 +23,12 @@ class DokterController extends Controller
      */
     public function create()
     {
-        $data['list_sp']    =[
+        $data['list_sp'] = [
             'Spesialis Anak',
             'Spesialis Bedah',
             'Spesialis Gigi',
         ];
+
         return view('dokter_create', $data);
     }
 
@@ -35,10 +38,10 @@ class DokterController extends Controller
     public function store(Request $request)
     {
         $dokter = new Dokter;
-        $dokter->kode_dokter   = $request->kode_dokter;
-        $dokter->nama_dokter   = $request->nama_dokter;
-        $dokter->spesialis     = $request->spesialis;
-        $dokter->nomor_hp       = $request->nomor_hp;
+        $dokter->kode_dokter = $request->kode_dokter;
+        $dokter->nama_dokter = $request->nama_dokter;
+        $dokter->spesialis = $request->spesialis;
+        $dokter->nomor_hp = $request->nomor_hp;
         $dokter->save();
 
         return redirect('dokter');
@@ -58,11 +61,12 @@ class DokterController extends Controller
     public function edit(string $id)
     {
         $data['dokter'] = Dokter::findOrFail($id);
-        $data['list_sp']    =[
+        $data['list_sp'] = [
             'Spesialis Anak',
             'Spesialis Bedah',
             'Spesialis Gigi',
         ];
+
         return view('dokter_edit', $data);
     }
 
@@ -72,16 +76,16 @@ class DokterController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            
-            'nama_dokter'  => 'required',
-            'spesialis'    => 'required',
-            'nomor_hp'     => 'required',
+            'nama_dokter' => 'required',
+            'spesialis'   => 'required',
+            'nomor_hp'    => 'required',
         ]);
+
         $dokter = Dokter::findOrFail($id);
-        $dokter->kode_dokter   = $request->kode_dokter;
-        $dokter->nama_dokter   = $request->nama_dokter;
-        $dokter->spesialis     = $request->spesialis;
-        $dokter->nomor_hp      = $request->nomor_hp;
+        $dokter->kode_dokter = $request->kode_dokter;
+        $dokter->nama_dokter = $request->nama_dokter;
+        $dokter->spesialis = $request->spesialis;
+        $dokter->nomor_hp = $request->nomor_hp;
         $dokter->save();
 
         return redirect('dokter');
@@ -97,10 +101,44 @@ class DokterController extends Controller
 
         return redirect('dokter');
     }
+
+    /**
+     * Laporan Kinerja Dokter
+     */
     public function laporan()
     {
-        $data['dokter'] = Dokter::all();
-        $data['judul'] = 'Laporan Data Dokter';
-        return view('dokter_laporan', $data);
+        $laporan = Dokter::leftJoin(
+                'administrasis',
+                'dokters.id',
+                '=',
+                'administrasis.dokter_id'
+            )
+            ->select(
+                'dokters.id',
+                'dokters.kode_dokter',
+                'dokters.nama_dokter',
+                'dokters.spesialis',
+                DB::raw('COUNT(administrasis.id) AS jumlah_pemeriksaan'),
+                DB::raw('COALESCE(SUM(administrasis.biaya),0) AS total_pendapatan')
+            )
+            ->groupBy(
+                'dokters.id',
+                'dokters.kode_dokter',
+                'dokters.nama_dokter',
+                'dokters.spesialis'
+            )
+            ->orderBy('dokters.nama_dokter', 'ASC')
+            ->get();
+
+        $totalDokter = Dokter::count();
+        $totalPemeriksaan = Administrasi::count();
+        $totalPendapatan = Administrasi::sum('biaya');
+
+        return view('dokter_laporan', compact(
+            'laporan',
+            'totalDokter',
+            'totalPemeriksaan',
+            'totalPendapatan'
+        ));
     }
 }

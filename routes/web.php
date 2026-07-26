@@ -1,21 +1,37 @@
 <?php
 
-use App\Http\Controllers\AdministrasiController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PasienController;
+use App\Http\Controllers\AdministrasiController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
 
+// ==================== AUTH ====================
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// ==================== HOME ====================
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+// ==================== DOKTER ====================
 Route::resource('dokter', DokterController::class);
-Route::get('/dokter/laporan/cetak', [DokterController::class, 'laporan']);
 
-Route::resource('administrasi',AdministrasiController::class);
-Route::get('adminsitrasi/laporan/cetak',[AdministrasiController::class, 'laporan']);
+Route::get('/laporan/dokter', [DokterController::class, 'laporan'])
+    ->name('dokter.laporan');
 
+// ==================== PASIEN ====================
 Route::resource('pasien', PasienController::class);
+
+Route::get('/laporan/pasien', [PasienController::class, 'laporan'])
+    ->name('pasien.laporan');
+
+// ==================== ADMINISTRASI ====================
+Route::resource('administrasi', AdministrasiController::class);
+
+Route::get('/laporan/administrasi', [AdministrasiController::class, 'laporan'])
+    ->name('administrasi.laporan');

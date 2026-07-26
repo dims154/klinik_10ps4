@@ -6,12 +6,12 @@
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">
-            <i class="fas fa-file-medical"></i>
-            Laporan Kinerja Dokter
+            <i class="fas fa-file-invoice-dollar"></i>
+            Laporan Administrasi
         </h1>
 
         <div>
-            <a href="{{ route('dokter.index') }}" class="btn btn-secondary btn-sm">
+            <a href="{{ route('administrasi.index') }}" class="btn btn-secondary btn-sm">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
 
@@ -28,10 +28,10 @@
             <div class="card border-left-primary shadow h-100 py-1">
                 <div class="card-body">
                     <h6 class="font-weight-bold text-primary text-uppercase">
-                        Total Dokter
+                        Total Transaksi
                     </h6>
 
-                    <h3>{{ $totalDokter }}</h3>
+                    <h3>{{ $totalTransaksi }}</h3>
                 </div>
             </div>
         </div>
@@ -40,18 +40,6 @@
             <div class="card border-left-success shadow h-100 py-1">
                 <div class="card-body">
                     <h6 class="font-weight-bold text-success text-uppercase">
-                        Total Pemeriksaan
-                    </h6>
-
-                    <h3>{{ $totalPemeriksaan }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-1">
-                <div class="card-body">
-                    <h6 class="font-weight-bold text-warning text-uppercase">
                         Total Pendapatan
                     </h6>
 
@@ -60,15 +48,26 @@
             </div>
         </div>
 
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-1">
+                <div class="card-body">
+                    <h6 class="font-weight-bold text-warning text-uppercase">
+                        Rata-rata Biaya
+                    </h6>
+
+                    <h3>Rp {{ number_format($rataBiaya,0,',','.') }}</h3>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    {{-- Tabel --}}
     <div class="card shadow mb-4">
 
         <div class="card-header py-3">
 
             <h6 class="m-0 font-weight-bold text-primary">
-                Data Kinerja Dokter
+                Data Transaksi Administrasi
             </h6>
 
             <small class="text-muted">
@@ -86,71 +85,64 @@
 
                     <thead class="thead-light">
 
-                    <tr>
+                        <tr>
 
-                        <th width="60">No</th>
-                        <th>Kode Dokter</th>
-                        <th>Nama Dokter</th>
-                        <th>Spesialis</th>
-                        <th class="text-center">Jumlah Pemeriksaan</th>
-                        <th class="text-right">Total Pendapatan</th>
+                            <th width="60">No</th>
+                            <th>Tanggal</th>
+                            <th>Kode pasiens</th>
+                            <th>Nama pasiens</th>
+                            <th>Kode Dokter</th>
+                            <th>Nama Dokter</th>
+                            <th class="text-right">Biaya</th>
 
-                    </tr>
+                        </tr>
 
                     </thead>
 
                     <tbody>
 
-                    @forelse($laporan as $item)
+                        @forelse($laporan as $item)
 
                         <tr>
 
                             <td>{{ $loop->iteration }}</td>
 
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+
+                            <td>{{ $item->kode_pasiens }}</td>
+
+                            <td>{{ $item->nama_pasiens }}</td>
+
                             <td>{{ $item->kode_dokter }}</td>
 
                             <td>{{ $item->nama_dokter }}</td>
 
-                            <td>
-                                <span class="badge badge-info">
-                                    {{ $item->spesialis }}
-                                </span>
-                            </td>
-
-                            <td class="text-center">
-                                {{ $item->jumlah_pemeriksaan }}
-                            </td>
-
                             <td class="text-right">
-                                Rp {{ number_format($item->total_pendapatan,0,',','.') }}
+                                Rp {{ number_format($item->biaya,0,',','.') }}
                             </td>
 
                         </tr>
 
-                    @empty
+                        @empty
 
                         <tr>
 
-                            <td colspan="6" class="text-center">
-                                Belum ada data administrasi.
+                            <td colspan="7" class="text-center">
+                                Belum ada transaksi administrasi.
                             </td>
 
                         </tr>
 
-                    @endforelse
+                        @endforelse
 
                     </tbody>
 
                     <tfoot>
 
-                        <tr class="font-weight-bold bg-light">
+                        <tr class="bg-light font-weight-bold">
 
-                            <td colspan="4" class="text-right">
-                                TOTAL
-                            </td>
-
-                            <td class="text-center">
-                                {{ $totalPemeriksaan }}
+                            <td colspan="6" class="text-right">
+                                TOTAL PENDAPATAN
                             </td>
 
                             <td class="text-right">
@@ -174,8 +166,8 @@
                 <div class="col-md-6">
 
                     <strong>
-                        Jumlah Dokter :
-                        {{ $totalDokter }}
+                        Total Transaksi :
+                        {{ $totalTransaksi }}
                     </strong>
 
                 </div>
@@ -194,7 +186,7 @@
 
                     <br><br><br>
 
-                    ______________________
+                    _______________________
 
                 </div>
 

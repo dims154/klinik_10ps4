@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-
+<link rel="stylesheet"
+href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,9 +20,67 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('bebas') }}/css/sb-admin-2.min.css" rel="stylesheet">
+<style>
 
+.dashboard-card{
+    border:none;
+    border-radius:15px;
+    transition:.3s;
+}
+
+.dashboard-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+
+.icon-circle{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:22px;
+}
+
+.bg-blue{
+    background:#4e73df;
+}
+
+.bg-green{
+    background:#1cc88a;
+}
+
+.bg-yellow{
+    background:#f6c23e;
+}
+
+.bg-red{
+    background:#e74a3b;
+}
+
+.card-title-small{
+    font-size:.8rem;
+    text-transform:uppercase;
+    font-weight:bold;
+    color:#888;
+}
+
+.number-dashboard{
+    font-size:32px;
+    font-weight:700;
+    margin:0;
+}
+
+</style>
 </head>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -31,7 +90,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -43,7 +102,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{ route('home') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -64,7 +123,7 @@
                     <span>Data Klinik</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="bg-white py-1 collapse-inner rounded">
                         <h6 class="collapse-header">Pasien:</h6>
                         <a class="collapse-item" href="{{ url('/pasien') }}">Tampil Data</a>
                         <a class="collapse-item" href="{{ url('/pasien/create') }}">Tambah Data</a>
@@ -84,7 +143,7 @@
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="bg-white py-1 collapse-inner rounded">
                         <h6 class="collapse-header">Administrasi:</h6>
                         <a class="collapse-item" href="{{ url('/administrasi') }}">Tampil Data</a>
                         <a class="collapse-item" href="{{ url('/administrasi/create') }}">Tambah Data</a>
@@ -108,7 +167,7 @@
                     <span>Laporan</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="bg-white py-1 collapse-inner rounded">
                         <a class="collapse-item" href="{{ url('/laporan/pasien') }}">Laporan Pasien</a>
                         <a class="collapse-item" href="{{ url('/laporan/dokter') }}">Laporan Dokter</a>
                         <a class="collapse-item" href="{{ url('/laporan/administrasi') }}">Laporan Administrasi</a>
@@ -186,7 +245,7 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
                             </a>
-                            <!-- Dropdown - Messages -->
+                            <!-- Dropdown F- Messages -->
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                 aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
@@ -329,7 +388,8 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
                                 <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+     src="{{ asset('bebas/img/undraw_profile.svg') }}"
+     alt="Profile">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -439,6 +499,7 @@
     <script src="{{ asset('bebas') }}/js/demo/chart-area-demo.js"></script>
     <script src="{{ asset('bebas') }}/js/demo/chart-pie-demo.js"></script>
 
+@stack('scripts')
 </body>
 
 </html>

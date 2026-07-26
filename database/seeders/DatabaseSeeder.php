@@ -18,15 +18,15 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('pasiens')->insert([
             [
-                'kode_pasien'   => '01',
-                'nama_pasien'   => 'Budi Rahmad',
+                'kode_pasiens'   => '01',
+                'nama_pasiens'   => 'Budi Rahmad',
                 'jenis_kelamin' => 'Laki-Laki',
                 'status'        => 'Belum Kawin',
                 'alamat'        => 'Thehok'
             ],
             [
-                'kode_pasien'   => '02',
-                'nama_pasien'   => 'Jhon',
+                'kode_pasiens'   => '02',
+                'nama_pasiens'   => 'Jhon',
                 'jenis_kelamin' => 'Laki-Laki',
                 'status'        => 'Belum Kawin',
                 'alamat'        => 'Thehok'

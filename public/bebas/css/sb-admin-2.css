@@ -7755,7 +7755,7 @@ button.bg-dark:focus {
   margin-right: 1.5rem !important;
 }
 
-.mb-4,
+.mb-3,
 .my-4 {
   margin-bottom: 1.5rem !important;
 }
@@ -7842,7 +7842,7 @@ button.bg-dark:focus {
 }
 
 .pt-2,
-.py-2 {
+.py-1 {
   padding-top: 0.5rem !important;
 }
 
@@ -7852,7 +7852,7 @@ button.bg-dark:focus {
 }
 
 .pb-2,
-.py-2 {
+.py-1 {
   padding-bottom: 0.5rem !important;
 }
 
