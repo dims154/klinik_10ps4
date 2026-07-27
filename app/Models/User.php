@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Models\Dokter;
+use App\Models\Pasiens;
+use App\Models\Administrasi;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -45,5 +49,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relasi User -> Dokter
+     */
+    public function dokters()
+    {
+        return $this->hasMany(Dokter::class);
+    }
+
+    /**
+     * Relasi User -> Pasien
+     */
+    public function pasiens()
+    {
+        return $this->hasMany(Pasiens::class);
+    }
+
+    /**
+     * Relasi User -> Administrasi
+     */
+    public function administrasis()
+    {
+        return $this->hasMany(Administrasi::class);
     }
 }

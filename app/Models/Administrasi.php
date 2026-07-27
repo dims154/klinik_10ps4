@@ -11,20 +11,38 @@ class Administrasi extends Model
 
     protected $table = 'administrasis';
 
+    /**
+     * Mass Assignment
+     */
     protected $fillable = [
+        'user_id',
         'tanggal',
-        'pasien_id',
+        'pasiens_id',
         'dokter_id',
         'biaya',
     ];
 
-    public function pasien()
+    /**
+     * Relasi ke User (pemilik data)
+     */
+    public function user()
     {
-        return $this->belongsTo(Pasiens::class, 'pasien_id', 'id');
+        return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relasi ke Pasien
+     */
+    public function pasien()
+    {
+        return $this->belongsTo(Pasiens::class, 'pasiens_id');
+    }
+
+    /**
+     * Relasi ke Dokter
+     */
     public function dokter()
     {
-        return $this->belongsTo(Dokter::class, 'dokter_id', 'id');
+        return $this->belongsTo(Dokter::class, 'dokter_id');
     }
 }

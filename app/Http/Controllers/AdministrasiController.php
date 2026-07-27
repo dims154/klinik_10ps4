@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Administrasi;
-use App\Models\pasiens;
+use App\Models\Pasiens;
 use App\Models\Dokter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdministrasiController extends Controller
 {
@@ -14,7 +15,11 @@ class AdministrasiController extends Controller
      */
     public function index()
     {
-        $data['administrasi'] = Administrasi::paginate(5);
+        $data['administrasi'] = Administrasi::with(['pasien', 'dokter'])
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->paginate(5);
+
         $data['judul'] = 'Data Administrasi';
 
         return view('administrasi_index', $data);
@@ -25,16 +30,12 @@ class AdministrasiController extends Controller
      */
     public function create()
     {
-        $data['list_pasiens'] = pasiens::selectRaw("
-                id,
-                concat(kode_pasien,' - ',nama_pasien) as tampil
-            ")
+        $data['list_pasiens'] = Pasiens::where('user_id', Auth::id())
+            ->selectRaw("id, concat(kode_pasien,' - ',nama_pasien) as tampil")
             ->pluck('tampil', 'id');
 
-        $data['list_dokter'] = Dokter::selectRaw("
-                id,
-                concat(kode_dokter,' - ',nama_dokter) as tampil
-            ")
+        $data['list_dokter'] = Dokter::where('user_id', Auth::id())
+            ->selectRaw("id, concat(kode_dokter,' - ',nama_dokter) as tampil")
             ->pluck('tampil', 'id');
 
         return view('administrasi_create', $data);
@@ -46,21 +47,22 @@ class AdministrasiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tanggal'    => 'required',
-            'pasien_id' => 'required',
-            'dokter_id'  => 'required',
-            'biaya'      => 'required|numeric'
+            'tanggal'   => 'required',
+            'pasien_id' => 'required|exists:pasiens,id',
+            'dokter_id' => 'required|exists:dokters,id',
+            'biaya'     => 'required|numeric',
         ]);
 
         Administrasi::create([
-            'tanggal'    => $request->tanggal,
+            'user_id'   => Auth::id(),
+            'tanggal'   => $request->tanggal,
             'pasien_id' => $request->pasien_id,
-            'dokter_id'  => $request->dokter_id,
-            'biaya'      => $request->biaya,
+            'dokter_id' => $request->dokter_id,
+            'biaya'     => $request->biaya,
         ]);
 
-        return redirect('/administrasi')
-            ->with('pesan', 'Data berhasil ditambah');
+        return redirect()->route('administrasi.index')
+            ->with('success', 'Data administrasi berhasil ditambahkan.');
     }
 
     /**
@@ -76,18 +78,15 @@ class AdministrasiController extends Controller
      */
     public function edit(string $id)
     {
-        $data['administrasi'] = Administrasi::findOrFail($id);
+        $data['administrasi'] = Administrasi::where('user_id', Auth::id())
+            ->findOrFail($id);
 
-        $data['list_pasiens'] = pasiens::selectRaw("
-                id,
-                concat(kode_pasien,' - ',nama_pasien) as tampil
-            ")
+        $data['list_pasiens'] = Pasiens::where('user_id', Auth::id())
+            ->selectRaw("id, concat(kode_pasien,' - ',nama_pasien) as tampil")
             ->pluck('tampil', 'id');
 
-        $data['list_dokter'] = Dokter::selectRaw("
-                id,
-                concat(kode_dokter,' - ',nama_dokter) as tampil
-            ")
+        $data['list_dokter'] = Dokter::where('user_id', Auth::id())
+            ->selectRaw("id, concat(kode_dokter,' - ',nama_dokter) as tampil")
             ->pluck('tampil', 'id');
 
         return view('administrasi_edit', $data);
@@ -99,23 +98,24 @@ class AdministrasiController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'tanggal'    => 'required',
-            'pasien_id' => 'required',
-            'dokter_id'  => 'required',
-            'biaya'      => 'required|numeric'
+            'tanggal'   => 'required',
+            'pasien_id' => 'required|exists:pasiens,id',
+            'dokter_id' => 'required|exists:dokters,id',
+            'biaya'     => 'required|numeric',
         ]);
 
-        $administrasi = Administrasi::findOrFail($id);
+        $administrasi = Administrasi::where('user_id', Auth::id())
+            ->findOrFail($id);
 
         $administrasi->update([
-            'tanggal'    => $request->tanggal,
+            'tanggal'   => $request->tanggal,
             'pasien_id' => $request->pasien_id,
-            'dokter_id'  => $request->dokter_id,
-            'biaya'      => $request->biaya,
+            'dokter_id' => $request->dokter_id,
+            'biaya'     => $request->biaya,
         ]);
 
-        return redirect('/administrasi')
-            ->with('pesan', 'Data berhasil diubah');
+        return redirect()->route('administrasi.index')
+            ->with('success', 'Data administrasi berhasil diperbarui.');
     }
 
     /**
@@ -123,10 +123,13 @@ class AdministrasiController extends Controller
      */
     public function destroy(string $id)
     {
-        Administrasi::findOrFail($id)->delete();
+        $administrasi = Administrasi::where('user_id', Auth::id())
+            ->findOrFail($id);
 
-        return redirect('/administrasi')
-            ->with('pesan', 'Data berhasil dihapus');
+        $administrasi->delete();
+
+        return redirect()->route('administrasi.index')
+            ->with('success', 'Data administrasi berhasil dihapus.');
     }
 
     /**
@@ -134,32 +137,14 @@ class AdministrasiController extends Controller
      */
     public function laporan()
     {
-        $laporan = Administrasi::join(
-                'pasiens',
-                'administrasis.pasien_id',
-                '=',
-                'pasiens.id'
-            )
-            ->join(
-                'dokters',
-                'administrasis.dokter_id',
-                '=',
-                'dokters.id'
-            )
-            ->select(
-                'administrasis.tanggal',
-                'administrasis.biaya',
-                'pasiens.kode_pasien',
-                'pasiens.nama_pasien',
-                'dokters.kode_dokter',
-                'dokters.nama_dokter'
-            )
-            ->orderBy('administrasis.tanggal', 'DESC')
+        $laporan = Administrasi::with(['pasien', 'dokter'])
+            ->where('user_id', Auth::id())
+            ->orderByDesc('tanggal')
             ->get();
 
-        $totalTransaksi = Administrasi::count();
-        $totalPendapatan = Administrasi::sum('biaya');
-        $rataBiaya = Administrasi::avg('biaya');
+        $totalTransaksi = Administrasi::where('user_id', Auth::id())->count();
+        $totalPendapatan = Administrasi::where('user_id', Auth::id())->sum('biaya');
+        $rataBiaya = Administrasi::where('user_id', Auth::id())->avg('biaya');
 
         return view('administrasi_laporan', compact(
             'laporan',

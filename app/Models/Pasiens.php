@@ -9,9 +9,16 @@ class Pasiens extends Model
 {
     use HasFactory;
 
+    /**
+     * Nama tabel
+     */
     protected $table = 'pasiens';
 
+    /**
+     * Mass Assignment
+     */
     protected $fillable = [
+        'user_id',
         'kode_pasien',
         'nama_pasien',
         'jenis_kelamin',
@@ -19,8 +26,19 @@ class Pasiens extends Model
         'alamat',
     ];
 
-    public function administrasi()
+    /**
+     * Relasi ke User (pemilik data)
+     */
+    public function user()
     {
-        return $this->hasMany(Administrasi::class, 'pasiens_id', 'id');
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relasi ke Administrasi
+     */
+    public function administrasis()
+    {
+        return $this->hasMany(Administrasi::class, 'pasiens_id');
     }
 }

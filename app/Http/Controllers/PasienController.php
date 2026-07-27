@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pasiens;
+use App\Models\Administrasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-class PasienController extends Controller
+class PasiensController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = [
-            'judul' => 'Data Pasien',
-            'pasiens' => Pasiens::orderBy('id', 'desc')->paginate(10),
-        ];
+        $data['pasiens'] = Pasiens::where('user_id', Auth::id())->get();
 
-        return view('pasien_index', $data);
+        return view('pasiens_index', $data);
     }
 
     /**
@@ -25,7 +25,7 @@ class PasienController extends Controller
      */
     public function create()
     {
-        return view('pasien_create');
+        return view('pasiens_create');
     }
 
     /**
@@ -34,17 +34,24 @@ class PasienController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_pasien' => 'required|unique:pasiens,kode_pasien',
-            'nama_pasien' => 'required',
-            'jenis_kelamin' => 'required',
-            'status' => 'required',
-            'alamat' => 'required',
+            'kode_pasien'    => 'required',
+            'nama_pasien'    => 'required',
+            'jenis_kelamin'  => 'required',
+            'status'         => 'required',
+            'alamat'         => 'required',
         ]);
 
-        Pasiens::create($request->all());
+        Pasiens::create([
+            'user_id'        => Auth::id(),
+            'kode_pasien'    => $request->kode_pasien,
+            'nama_pasien'    => $request->nama_pasien,
+            'jenis_kelamin'  => $request->jenis_kelamin,
+            'status'         => $request->status,
+            'alamat'         => $request->alamat,
+        ]);
 
-        return redirect()->route('pasien.index')
-            ->with('pesan', 'Data pasien berhasil ditambahkan.');
+        return redirect()->route('pasiens.index')
+            ->with('success', 'Data pasien berhasil ditambahkan.');
     }
 
     /**
@@ -52,7 +59,7 @@ class PasienController extends Controller
      */
     public function show(string $id)
     {
-        return redirect()->route('pasien.edit', $id);
+        //
     }
 
     /**
@@ -60,12 +67,10 @@ class PasienController extends Controller
      */
     public function edit(string $id)
     {
-        $data = [
-            'judul' => 'Edit Data Pasien',
-            'pasiens' => Pasiens::findOrFail($id),
-        ];
+        $data['pasien'] = Pasiens::where('user_id', Auth::id())
+            ->findOrFail($id);
 
-        return view('pasien_edit', $data);
+        return view('pasiens_edit', $data);
     }
 
     /**
@@ -74,19 +79,26 @@ class PasienController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'kode_pasien' => 'required|unique:pasiens,kode_pasien,' . $id,
-            'nama_pasien' => 'required',
-            'jenis_kelamin' => 'required',
-            'status' => 'required',
-            'alamat' => 'required',
+            'kode_pasien'    => 'required',
+            'nama_pasien'    => 'required',
+            'jenis_kelamin'  => 'required',
+            'status'         => 'required',
+            'alamat'         => 'required',
         ]);
 
-        $pasien = Pasiens::findOrFail($id);
+        $pasien = Pasiens::where('user_id', Auth::id())
+            ->findOrFail($id);
 
-        $pasien->update($request->all());
+        $pasien->update([
+            'kode_pasien'    => $request->kode_pasien,
+            'nama_pasien'    => $request->nama_pasien,
+            'jenis_kelamin'  => $request->jenis_kelamin,
+            'status'         => $request->status,
+            'alamat'         => $request->alamat,
+        ]);
 
-        return redirect()->route('pasien.index')
-            ->with('pesan', 'Data pasien berhasil diubah.');
+        return redirect()->route('pasiens.index')
+            ->with('success', 'Data pasien berhasil diperbarui.');
     }
 
     /**
@@ -94,12 +106,13 @@ class PasienController extends Controller
      */
     public function destroy(string $id)
     {
-        $pasien = Pasiens::findOrFail($id);
+        $pasien = Pasiens::where('user_id', Auth::id())
+            ->findOrFail($id);
 
         $pasien->delete();
 
-        return redirect()->route('pasien.index')
-            ->with('pesan', 'Data pasien berhasil dihapus.');
+        return redirect()->route('pasiens.index')
+            ->with('success', 'Data pasien berhasil dihapus.');
     }
 
     /**
@@ -107,8 +120,21 @@ class PasienController extends Controller
      */
     public function laporan()
     {
-        $laporan = Pasiens::orderBy('kode_pasien')->get();
+        $laporan = Pasiens::where('user_id', Auth::id())
+            ->orderBy('nama_pasien')
+            ->get();
 
-        return view('pasiens_laporan', compact('laporan'));
+        $totalPasien = Pasiens::where('user_id', Auth::id())->count();
+
+        $totalPemeriksaan = Administrasi::where('user_id', Auth::id())->count();
+
+        $totalPendapatan = Administrasi::where('user_id', Auth::id())->sum('biaya');
+
+        return view('pasiens_laporan', compact(
+            'laporan',
+            'totalPasien',
+            'totalPemeriksaan',
+            'totalPendapatan'
+        ));
     }
 }

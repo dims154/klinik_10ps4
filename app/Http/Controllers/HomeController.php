@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dokter;
 use App\Models\Pasiens;
 use App\Models\Administrasi;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -16,21 +17,29 @@ class HomeController extends Controller
 
     public function index()
     {
-        $totalDokter = Dokter::count();
-        $totalPasien = Pasiens::count();
-        $totalTransaksi = Administrasi::count();
-        $totalPendapatan = Administrasi::sum('biaya');
+        $userId = Auth::id();
 
-        $pendapatanBulanan = Administrasi::selectRaw('MONTH(tanggal) as bulan, SUM(biaya) as total')
+        $totalDokter = Dokter::where('user_id', $userId)->count();
+
+        $totalPasien = Pasiens::where('user_id', $userId)->count();
+
+        $totalTransaksi = Administrasi::where('user_id', $userId)->count();
+
+        $totalPendapatan = Administrasi::where('user_id', $userId)->sum('biaya');
+
+        $pendapatanBulanan = Administrasi::where('user_id', $userId)
+            ->selectRaw('MONTH(tanggal) as bulan, SUM(biaya) as total')
             ->groupBy('bulan')
             ->orderBy('bulan')
             ->get();
 
-        $statusPasien = Pasiens::selectRaw('jenis_kelamin, COUNT(*) as jumlah')
+        $statusPasien = Pasiens::where('user_id', $userId)
+            ->selectRaw('jenis_kelamin, COUNT(*) as jumlah')
             ->groupBy('jenis_kelamin')
             ->get();
 
         $transaksiTerbaru = Administrasi::with(['pasien', 'dokter'])
+            ->where('user_id', $userId)
             ->latest('tanggal')
             ->take(5)
             ->get();

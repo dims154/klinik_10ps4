@@ -13,11 +13,18 @@ return new class extends Migration
     {
         Schema::create('pasiens', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_pasiens',10);
-            $table->string('nama_pasiens',30);
+
+            // Pemilik data pasien
+            $table->foreignId('user_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            $table->string('kode_pasien',10);
+            $table->string('nama_pasien',30);
             $table->string('jenis_kelamin',20);
             $table->string('status',20);
             $table->string('alamat',100);
+
             $table->timestamps();
         });
     }
