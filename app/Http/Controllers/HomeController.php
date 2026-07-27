@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Administrasi;
 use App\Models\Dokter;
 use App\Models\Pasiens;
-use App\Models\Administrasi;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
+    /**
+     * Dashboard
+     */
     public function index()
     {
         $userId = Auth::id();
@@ -28,13 +33,13 @@ class HomeController extends Controller
         $totalPendapatan = Administrasi::where('user_id', $userId)->sum('biaya');
 
         $pendapatanBulanan = Administrasi::where('user_id', $userId)
-            ->selectRaw('MONTH(tanggal) as bulan, SUM(biaya) as total')
+            ->selectRaw('MONTH(tanggal) AS bulan, SUM(biaya) AS total')
             ->groupBy('bulan')
             ->orderBy('bulan')
             ->get();
 
         $statusPasien = Pasiens::where('user_id', $userId)
-            ->selectRaw('jenis_kelamin, COUNT(*) as jumlah')
+            ->selectRaw('jenis_kelamin, COUNT(*) AS jumlah')
             ->groupBy('jenis_kelamin')
             ->get();
 

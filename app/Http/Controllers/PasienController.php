@@ -6,39 +6,31 @@ use App\Models\Pasiens;
 use App\Models\Administrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-class PasiensController extends Controller
+class PasienController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $data['pasiens'] = Pasiens::where('user_id', Auth::id())->get();
+        $pasiens = Pasiens::where('user_id', Auth::id())
+            ->orderBy('nama_pasien')
+            ->paginate(10);
 
-        return view('pasiens_index', $data);
+        return view('pasien_index', compact('pasiens'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('pasiens_create');
+        return view('pasien_create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'kode_pasien'    => 'required',
-            'nama_pasien'    => 'required',
-            'jenis_kelamin'  => 'required',
-            'status'         => 'required',
-            'alamat'         => 'required',
+            'kode_pasien'   => 'required|max:10',
+            'nama_pasien'   => 'required|max:30',
+            'jenis_kelamin' => 'required',
+            'status'        => 'required|max:20',
+            'alamat'        => 'required|max:100',
         ]);
 
         Pasiens::create([
@@ -50,40 +42,35 @@ class PasiensController extends Controller
             'alamat'         => $request->alamat,
         ]);
 
-        return redirect()->route('pasiens.index')
+        return redirect()
+            ->route('pasien.index')
             ->with('success', 'Data pasien berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $data['pasien'] = Pasiens::where('user_id', Auth::id())
+        $pasien = Pasiens::where('user_id', Auth::id())
             ->findOrFail($id);
 
-        return view('pasiens_edit', $data);
+        return view('pasien_show', compact('pasien'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    public function edit(string $id)
+    {
+        $pasien = Pasiens::where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('pasien_edit', compact('pasien'));
+    }
+
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'kode_pasien'    => 'required',
-            'nama_pasien'    => 'required',
-            'jenis_kelamin'  => 'required',
-            'status'         => 'required',
-            'alamat'         => 'required',
+            'kode_pasien'   => 'required|max:10',
+            'nama_pasien'   => 'required|max:30',
+            'jenis_kelamin' => 'required',
+            'status'        => 'required|max:20',
+            'alamat'        => 'required|max:100',
         ]);
 
         $pasien = Pasiens::where('user_id', Auth::id())
@@ -97,13 +84,11 @@ class PasiensController extends Controller
             'alamat'         => $request->alamat,
         ]);
 
-        return redirect()->route('pasiens.index')
+        return redirect()
+            ->route('pasien.index')
             ->with('success', 'Data pasien berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $pasien = Pasiens::where('user_id', Auth::id())
@@ -111,26 +96,24 @@ class PasiensController extends Controller
 
         $pasien->delete();
 
-        return redirect()->route('pasiens.index')
+        return redirect()
+            ->route('pasien.index')
             ->with('success', 'Data pasien berhasil dihapus.');
     }
 
-    /**
-     * Laporan Data Pasien
-     */
     public function laporan()
     {
         $laporan = Pasiens::where('user_id', Auth::id())
             ->orderBy('nama_pasien')
             ->get();
 
-        $totalPasien = Pasiens::where('user_id', Auth::id())->count();
+        $totalPasien = $laporan->count();
 
         $totalPemeriksaan = Administrasi::where('user_id', Auth::id())->count();
 
         $totalPendapatan = Administrasi::where('user_id', Auth::id())->sum('biaya');
 
-        return view('pasiens_laporan', compact(
+        return view('pasien_laporan', compact(
             'laporan',
             'totalPasien',
             'totalPemeriksaan',

@@ -47,11 +47,21 @@ class AdministrasiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tanggal'   => 'required',
+            'tanggal'   => 'required|date',
             'pasien_id' => 'required|exists:pasiens,id',
             'dokter_id' => 'required|exists:dokters,id',
-            'biaya'     => 'required|numeric',
+            'biaya'     => 'required|numeric|min:0',
         ]);
+
+        // Pastikan pasien milik user login
+        Pasiens::where('id', $request->pasien_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        // Pastikan dokter milik user login
+        Dokter::where('id', $request->dokter_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
 
         Administrasi::create([
             'user_id'   => Auth::id(),
@@ -61,7 +71,8 @@ class AdministrasiController extends Controller
             'biaya'     => $request->biaya,
         ]);
 
-        return redirect()->route('administrasi.index')
+        return redirect()
+            ->route('administrasi.index')
             ->with('success', 'Data administrasi berhasil ditambahkan.');
     }
 
@@ -70,7 +81,11 @@ class AdministrasiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $administrasi = Administrasi::with(['pasien', 'dokter'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('administrasi_show', compact('administrasi'));
     }
 
     /**
@@ -98,11 +113,21 @@ class AdministrasiController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'tanggal'   => 'required',
+            'tanggal'   => 'required|date',
             'pasien_id' => 'required|exists:pasiens,id',
             'dokter_id' => 'required|exists:dokters,id',
-            'biaya'     => 'required|numeric',
+            'biaya'     => 'required|numeric|min:0',
         ]);
+
+        // Pastikan pasien milik user login
+        Pasiens::where('id', $request->pasien_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        // Pastikan dokter milik user login
+        Dokter::where('id', $request->dokter_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
 
         $administrasi = Administrasi::where('user_id', Auth::id())
             ->findOrFail($id);
@@ -114,7 +139,8 @@ class AdministrasiController extends Controller
             'biaya'     => $request->biaya,
         ]);
 
-        return redirect()->route('administrasi.index')
+        return redirect()
+            ->route('administrasi.index')
             ->with('success', 'Data administrasi berhasil diperbarui.');
     }
 
@@ -128,7 +154,8 @@ class AdministrasiController extends Controller
 
         $administrasi->delete();
 
-        return redirect()->route('administrasi.index')
+        return redirect()
+            ->route('administrasi.index')
             ->with('success', 'Data administrasi berhasil dihapus.');
     }
 

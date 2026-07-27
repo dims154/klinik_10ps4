@@ -27,7 +27,7 @@ class Pasiens extends Model
     ];
 
     /**
-     * Relasi ke User (pemilik data)
+     * Relasi ke User
      */
     public function user()
     {
@@ -39,6 +39,6 @@ class Pasiens extends Model
      */
     public function administrasis()
     {
-        return $this->hasMany(Administrasi::class, 'pasiens_id');
+        return $this->hasMany(Administrasi::class, 'pasien_id');
     }
 }

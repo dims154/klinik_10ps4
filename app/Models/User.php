@@ -39,7 +39,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -52,7 +52,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi User -> Dokter
+     * User memiliki banyak Dokter
      */
     public function dokters()
     {
@@ -60,7 +60,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi User -> Pasien
+     * User memiliki banyak Pasien
      */
     public function pasiens()
     {
@@ -68,7 +68,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi User -> Administrasi
+     * User memiliki banyak Administrasi
      */
     public function administrasis()
     {

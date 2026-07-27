@@ -21,7 +21,6 @@
         </div>
     </div>
 
-    {{-- Statistik --}}
     <div class="row">
 
         <div class="col-xl-4 col-md-6 mb-4">
@@ -86,15 +85,13 @@
                     <thead class="thead-light">
 
                         <tr>
-
                             <th width="60">No</th>
                             <th>Tanggal</th>
-                            <th>Kode pasiens</th>
-                            <th>Nama pasiens</th>
+                            <th>Kode Pasien</th>
+                            <th>Nama Pasien</th>
                             <th>Kode Dokter</th>
                             <th>Nama Dokter</th>
                             <th class="text-right">Biaya</th>
-
                         </tr>
 
                     </thead>
@@ -109,13 +106,13 @@
 
                             <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
 
-                            <td>{{ $item->kode_pasiens }}</td>
+                            <td>{{ $item->pasien->kode_pasien ?? '-' }}</td>
 
-                            <td>{{ $item->nama_pasiens }}</td>
+                            <td>{{ $item->pasien->nama_pasien ?? '-' }}</td>
 
-                            <td>{{ $item->kode_dokter }}</td>
+                            <td>{{ $item->dokter->kode_dokter ?? '-' }}</td>
 
-                            <td>{{ $item->nama_dokter }}</td>
+                            <td>{{ $item->dokter->nama_dokter ?? '-' }}</td>
 
                             <td class="text-right">
                                 Rp {{ number_format($item->biaya,0,',','.') }}

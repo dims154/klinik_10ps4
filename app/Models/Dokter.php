@@ -2,10 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Dokter extends Model
 {
+    use HasFactory;
+
+    /**
+     * Nama tabel
+     */
+    protected $table = 'dokters';
+
+    /**
+     * Mass Assignment
+     */
     protected $fillable = [
         'user_id',
         'kode_dokter',
@@ -15,7 +26,7 @@ class Dokter extends Model
     ];
 
     /**
-     * Relasi ke User (pemilik data)
+     * Relasi ke User
      */
     public function user()
     {

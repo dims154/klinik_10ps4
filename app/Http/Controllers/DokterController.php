@@ -15,9 +15,11 @@ class DokterController extends Controller
      */
     public function index()
     {
-        $data['dokter'] = Dokter::where('user_id', Auth::id())->get();
+        $dokter = Dokter::where('user_id', Auth::id())
+            ->orderBy('nama_dokter')
+            ->get();
 
-        return view('dokter_index', $data);
+        return view('dokter_index', compact('dokter'));
     }
 
     /**
@@ -25,13 +27,13 @@ class DokterController extends Controller
      */
     public function create()
     {
-        $data['list_sp'] = [
+        $list_sp = [
             'Spesialis Anak',
             'Spesialis Bedah',
             'Spesialis Gigi',
         ];
 
-        return view('dokter_create', $data);
+        return view('dokter_create', compact('list_sp'));
     }
 
     /**
@@ -40,10 +42,10 @@ class DokterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_dokter' => 'required',
-            'nama_dokter' => 'required',
+            'kode_dokter' => 'required|max:10',
+            'nama_dokter' => 'required|max:30',
             'spesialis'   => 'required',
-            'nomor_hp'    => 'required',
+            'nomor_hp'    => 'required|max:20',
         ]);
 
         Dokter::create([
@@ -63,7 +65,10 @@ class DokterController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $dokter = Dokter::where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('dokter_show', compact('dokter'));
     }
 
     /**
@@ -71,16 +76,16 @@ class DokterController extends Controller
      */
     public function edit(string $id)
     {
-        $data['dokter'] = Dokter::where('user_id', Auth::id())
+        $dokter = Dokter::where('user_id', Auth::id())
             ->findOrFail($id);
 
-        $data['list_sp'] = [
+        $list_sp = [
             'Spesialis Anak',
             'Spesialis Bedah',
             'Spesialis Gigi',
         ];
 
-        return view('dokter_edit', $data);
+        return view('dokter_edit', compact('dokter', 'list_sp'));
     }
 
     /**
@@ -89,10 +94,10 @@ class DokterController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'kode_dokter' => 'required',
-            'nama_dokter' => 'required',
+            'kode_dokter' => 'required|max:10',
+            'nama_dokter' => 'required|max:30',
             'spesialis'   => 'required',
-            'nomor_hp'    => 'required',
+            'nomor_hp'    => 'required|max:20',
         ]);
 
         $dokter = Dokter::where('user_id', Auth::id())

@@ -11,9 +11,6 @@ class Administrasi extends Model
 
     protected $table = 'administrasis';
 
-    /**
-     * Mass Assignment
-     */
     protected $fillable = [
         'user_id',
         'tanggal',
@@ -23,7 +20,7 @@ class Administrasi extends Model
     ];
 
     /**
-     * Relasi ke User (pemilik data)
+     * Relasi User
      */
     public function user()
     {
@@ -31,7 +28,7 @@ class Administrasi extends Model
     }
 
     /**
-     * Relasi ke Pasien
+     * Relasi Pasien
      */
     public function pasien()
     {
@@ -39,7 +36,7 @@ class Administrasi extends Model
     }
 
     /**
-     * Relasi ke Dokter
+     * Relasi Dokter
      */
     public function dokter()
     {
