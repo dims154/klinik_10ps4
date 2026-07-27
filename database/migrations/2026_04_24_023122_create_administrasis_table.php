@@ -8,35 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('administrasis', function (Blueprint $table) {
+        Schema::table('administrasis', function (Blueprint $table) {
 
-            $table->id();
-
-            // Pemilik data
             $table->foreignId('user_id')
+                  ->nullable()
+                  ->after('id')
                   ->constrained()
                   ->cascadeOnDelete();
 
-            $table->date('tanggal');
-
-            // Relasi ke pasien
-            $table->foreignId('pasiens_id')
-                  ->constrained('pasiens')
-                  ->cascadeOnDelete();
-
-            // Relasi ke dokter
-            $table->foreignId('dokter_id')
-                  ->constrained('dokters')
-                  ->cascadeOnDelete();
-
-            $table->integer('biaya');
-
-            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('administrasis');
+        Schema::table('administrasis', function (Blueprint $table) {
+
+            $table->dropConstrainedForeignId('user_id');
+
+        });
     }
 };
