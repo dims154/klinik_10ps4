@@ -54,60 +54,58 @@
 
                     <tbody>
 
-                    @forelse($pasiens as $pasien)
+                        @forelse($pasiens as $pasien)
 
-                        <tr>
+                            <tr>
 
-                            <td class="text-center">
-                                {{ $loop->iteration + ($pasiens->firstItem() ?? 1) - 1 }}
-                            </td>
+                                <td class="text-center">
+                                    {{ $loop->iteration + ($pasiens->firstItem() ?? 1) - 1 }}
+                                </td>
 
-                            <td>{{ $pasien->kode_pasien }}</td>
+                                <td>{{ $pasien->kode_pasien }}</td>
 
-                            <td>{{ $pasien->nama_pasien }}</td>
+                                <td>{{ $pasien->nama_pasien }}</td>
 
-                            <td>{{ $pasien->jenis_kelamin }}</td>
+                                <td>{{ $pasien->jenis_kelamin }}</td>
 
-                            <td>{{ $pasien->status }}</td>
+                                <td>{{ $pasien->status }}</td>
 
-                            <td>{{ $pasien->alamat }}</td>
+                                <td>{{ $pasien->alamat }}</td>
 
-                            <td class="text-center">
+                                <td class="text-center">
 
-                                <a href="{{ route('pasien.edit', $pasien->id) }}"
-                                   class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                    <a href="{{ route('pasien.edit', $pasien->id) }}"
+                                        class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
 
-                                <form action="{{ route('pasien.destroy', $pasien->id) }}"
-                                      method="POST"
-                                      style="display:inline-block"
-                                      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    <form action="{{ route('pasien.destroy', $pasien->id) }}"
+                                        method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')">
 
-                                    @csrf
-                                    @method('DELETE')
+                                        @csrf
+                                        @method('DELETE')
 
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
 
-                                </form>
+                                    </form>
 
-                            </td>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    @empty
+                        @empty
 
-                        <tr>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">
+                                    Belum ada data pasien.
+                                </td>
+                            </tr>
 
-                            <td colspan="7" class="text-center text-muted">
-                                Belum ada data pasien.
-                            </td>
-
-                        </tr>
-
-                    @endforelse
+                        @endforelse
 
                     </tbody>
 
@@ -115,10 +113,9 @@
 
             </div>
 
-            <div class="d-flex justify-content-end">
-
+            {{-- Pagination di sebelah kiri --}}
+            <div class="mt-3">
                 {{ $pasiens->links() }}
-
             </div>
 
         </div>

@@ -11,50 +11,50 @@ use Illuminate\Support\Facades\Auth;
 class AdministrasiController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar administrasi.
      */
     public function index()
     {
+        $data['judul'] = 'Data Administrasi';
+
         $data['administrasi'] = Administrasi::with(['pasien', 'dokter'])
             ->where('user_id', Auth::id())
             ->latest()
             ->paginate(5);
 
-        $data['judul'] = 'Data Administrasi';
-
         return view('administrasi_index', $data);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Form tambah administrasi.
      */
     public function create()
     {
         $data['list_pasiens'] = Pasiens::where('user_id', Auth::id())
-            ->selectRaw("id, concat(kode_pasien,' - ',nama_pasien) as tampil")
+            ->selectRaw("id, CONCAT(kode_pasien,' - ',nama_pasien) AS tampil")
             ->pluck('tampil', 'id');
 
         $data['list_dokter'] = Dokter::where('user_id', Auth::id())
-            ->selectRaw("id, concat(kode_dokter,' - ',nama_dokter) as tampil")
+            ->selectRaw("id, CONCAT(kode_dokter,' - ',nama_dokter) AS tampil")
             ->pluck('tampil', 'id');
 
         return view('administrasi_create', $data);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Simpan data administrasi.
      */
     public function store(Request $request)
     {
         $request->validate([
-            'tanggal'   => 'required|date',
-            'pasien_id' => 'required|exists:pasiens,id',
-            'dokter_id' => 'required|exists:dokters,id',
-            'biaya'     => 'required|numeric|min:0',
+            'tanggal'    => 'required|date',
+            'pasiens_id' => 'required|exists:pasiens,id',
+            'dokter_id'  => 'required|exists:dokters,id',
+            'biaya'      => 'required|numeric|min:0',
         ]);
 
         // Pastikan pasien milik user login
-        Pasiens::where('id', $request->pasien_id)
+        Pasiens::where('id', $request->pasiens_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
@@ -64,11 +64,11 @@ class AdministrasiController extends Controller
             ->firstOrFail();
 
         Administrasi::create([
-            'user_id'   => Auth::id(),
-            'tanggal'   => $request->tanggal,
-            'pasien_id' => $request->pasien_id,
-            'dokter_id' => $request->dokter_id,
-            'biaya'     => $request->biaya,
+            'user_id'    => Auth::id(),
+            'tanggal'    => $request->tanggal,
+            'pasiens_id' => $request->pasiens_id,
+            'dokter_id'  => $request->dokter_id,
+            'biaya'      => $request->biaya,
         ]);
 
         return redirect()
@@ -77,7 +77,7 @@ class AdministrasiController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Detail administrasi.
      */
     public function show(string $id)
     {
@@ -89,7 +89,7 @@ class AdministrasiController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Form edit administrasi.
      */
     public function edit(string $id)
     {
@@ -97,34 +97,32 @@ class AdministrasiController extends Controller
             ->findOrFail($id);
 
         $data['list_pasiens'] = Pasiens::where('user_id', Auth::id())
-            ->selectRaw("id, concat(kode_pasien,' - ',nama_pasien) as tampil")
+            ->selectRaw("id, CONCAT(kode_pasien,' - ',nama_pasien) AS tampil")
             ->pluck('tampil', 'id');
 
         $data['list_dokter'] = Dokter::where('user_id', Auth::id())
-            ->selectRaw("id, concat(kode_dokter,' - ',nama_dokter) as tampil")
+            ->selectRaw("id, CONCAT(kode_dokter,' - ',nama_dokter) AS tampil")
             ->pluck('tampil', 'id');
 
         return view('administrasi_edit', $data);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update data administrasi.
      */
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'tanggal'   => 'required|date',
-            'pasien_id' => 'required|exists:pasiens,id',
-            'dokter_id' => 'required|exists:dokters,id',
-            'biaya'     => 'required|numeric|min:0',
+            'tanggal'    => 'required|date',
+            'pasiens_id' => 'required|exists:pasiens,id',
+            'dokter_id'  => 'required|exists:dokters,id',
+            'biaya'      => 'required|numeric|min:0',
         ]);
 
-        // Pastikan pasien milik user login
-        Pasiens::where('id', $request->pasien_id)
+        Pasiens::where('id', $request->pasiens_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        // Pastikan dokter milik user login
         Dokter::where('id', $request->dokter_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
@@ -133,10 +131,10 @@ class AdministrasiController extends Controller
             ->findOrFail($id);
 
         $administrasi->update([
-            'tanggal'   => $request->tanggal,
-            'pasien_id' => $request->pasien_id,
-            'dokter_id' => $request->dokter_id,
-            'biaya'     => $request->biaya,
+            'tanggal'    => $request->tanggal,
+            'pasiens_id' => $request->pasiens_id,
+            'dokter_id'  => $request->dokter_id,
+            'biaya'      => $request->biaya,
         ]);
 
         return redirect()
@@ -145,7 +143,7 @@ class AdministrasiController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Hapus data administrasi.
      */
     public function destroy(string $id)
     {
@@ -160,7 +158,7 @@ class AdministrasiController extends Controller
     }
 
     /**
-     * Laporan Administrasi
+     * Laporan administrasi.
      */
     public function laporan()
     {

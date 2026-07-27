@@ -12,39 +12,38 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ url('administrasi') }}" method="POST">
+
+                    <form action="{{ route('administrasi.store') }}" method="POST">
                         @csrf
 
-                        <div class="form-group">
-                            <label for="tanggal">Tanggal</label>
+                        <div class="form-group mb-3">
+                            <label>Tanggal</label>
 
                             <input
                                 type="date"
-                                class="form-control"
                                 name="tanggal"
-                                id="tanggal"
+                                class="form-control"
                                 value="{{ old('tanggal') }}">
 
-                            <span class="text-danger">
-                                {{ $errors->first('tanggal') }}
-                            </span>
+                            @error('tanggal')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
-                        <div class="form-group">
-                            <label for="pasien_id">Pasien</label>
+                        <div class="form-group mb-3">
+                            <label>Pasien</label>
 
                             <select
-                                class="form-control"
-                                name="pasien_id"
-                                id="pasien_id">
+                                name="pasiens_id"
+                                class="form-control">
 
                                 <option value="">-- Pilih Pasien --</option>
 
-                                @foreach ($list_pasiens as $id => $nama)
+                                @foreach($list_pasiens as $id => $nama)
 
                                     <option
                                         value="{{ $id }}"
-                                        {{ old('pasien_id') == $id ? 'selected' : '' }}>
+                                        {{ old('pasiens_id') == $id ? 'selected' : '' }}>
                                         {{ $nama }}
                                     </option>
 
@@ -52,22 +51,21 @@
 
                             </select>
 
-                            <span class="text-danger">
-                                {{ $errors->first('pasien_id') }}
-                            </span>
+                            @error('pasiens_id')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
-                        <div class="form-group">
-                            <label for="dokter_id">Dokter</label>
+                        <div class="form-group mb-3">
+                            <label>Dokter</label>
 
                             <select
-                                class="form-control"
                                 name="dokter_id"
-                                id="dokter_id">
+                                class="form-control">
 
                                 <option value="">-- Pilih Dokter --</option>
 
-                                @foreach ($list_dokter as $id => $nama)
+                                @foreach($list_dokter as $id => $nama)
 
                                     <option
                                         value="{{ $id }}"
@@ -79,32 +77,35 @@
 
                             </select>
 
-                            <span class="text-danger">
-                                {{ $errors->first('dokter_id') }}
-                            </span>
+                            @error('dokter_id')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
-                        <div class="form-group">
-                            <label for="biaya">Biaya</label>
+                        <div class="form-group mb-3">
+                            <label>Biaya</label>
 
                             <input
                                 type="number"
-                                class="form-control"
                                 name="biaya"
-                                id="biaya"
+                                class="form-control"
                                 value="{{ old('biaya') }}">
 
-                            <span class="text-danger">
-                                {{ $errors->first('biaya') }}
-                            </span>
+                            @error('biaya')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
                 </div>
 
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="btn btn-primary">
                         Simpan
                     </button>
+
+                    <a href="{{ route('administrasi.index') }}" class="btn btn-secondary">
+                        Kembali
+                    </a>
                     </form>
                 </div>
 
