@@ -8,23 +8,31 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('administrasis', function (Blueprint $table) {
+        Schema::create('administrasis', function (Blueprint $table) {
+            $table->id();
 
             $table->foreignId('user_id')
-                  ->nullable()
-                  ->after('id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
+            $table->date('tanggal');
+
+            $table->foreignId('pasiens_id')
+                ->constrained('pasiens')
+                ->cascadeOnDelete();
+
+            $table->foreignId('dokter_id')
+                ->constrained('dokters')
+                ->cascadeOnDelete();
+
+            $table->decimal('biaya', 12, 2);
+
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::table('administrasis', function (Blueprint $table) {
-
-            $table->dropConstrainedForeignId('user_id');
-
-        });
+        Schema::dropIfExists('administrasis');
     }
 };
