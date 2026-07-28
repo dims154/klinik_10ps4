@@ -14,8 +14,7 @@ Sistem Informasi Klinik Berbasis Web yang dikembangkan menggunakan **Laravel** u
 **Demo Website**  
 👉 https://klinik10ps4-production.up.railway.app
 
-
-Login : admin@klinik
+Login : admin@klinik  
 pass  : admin123
 ---
 
