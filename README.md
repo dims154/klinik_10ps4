@@ -7,12 +7,14 @@
 Sistem Informasi Klinik Berbasis Web yang dikembangkan menggunakan **Laravel** untuk membantu pengelolaan data dokter, pasien, administrasi, serta penyajian laporan klinik secara digital.
 
 ---
+<img width="1350" height="634" alt="dashboard" src="https://github.com/user-attachments/assets/28b65644-a1c0-4d73-9438-b7210fdb4036" />
 
 ## 🌐 Live Demo
 
 **Demo Website**  
 👉 https://klinik10ps4-production.up.railway.app
-
+Login : admin@klinik
+pass  : admin123
 ---
 
 ## ✨ Fitur
